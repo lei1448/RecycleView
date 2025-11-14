@@ -9,6 +9,10 @@ public class ScrollController : MonoBehaviour
     public TMP_InputField indexInputField;
     public Button goToButton;
 
+    public TMP_InputField updateIdInputField;
+    public TMP_InputField updateNameInputField;
+    public Button submitBtn;
+
     void Start()
     {
         if (goToButton != null)
@@ -20,11 +24,26 @@ public class ScrollController : MonoBehaviour
         {
             indexInputField.onSubmit.AddListener(OnInputSubmit);
         }
+
+        if(updateIdInputField != null && updateNameInputField != null && submitBtn != null)
+        {
+            submitBtn.onClick.AddListener(HandleUpdateRequest);
+        }
     }
 
     private void OnInputSubmit(string text)
     {
         HandleScrollRequest();
+    }
+
+    public void HandleUpdateRequest()
+    {
+        string text = updateIdInputField.text;
+        if (int.TryParse(text, out int targetIndex))
+        {
+            Debug.Log($"修改索引: {targetIndex}");
+            carouselView.UpdateData(targetIndex,new ListItemData(){ id = targetIndex, name = updateNameInputField.text});
+        }
     }
 
     public void HandleScrollRequest()
