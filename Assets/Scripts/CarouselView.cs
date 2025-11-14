@@ -16,6 +16,9 @@ public class CarouselView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     public float maxFlingVelocity = 20f;
     private List<ListItemData> allData;
     private ListItemView[] itemViews = new ListItemView[7];
+
+    public float velocityThreshold = 5.0f; //速度阈值
+    private bool dataIsDirty = false;
     
 
     private float currentScrollPosition = 0f;
@@ -170,8 +173,21 @@ public class CarouselView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         int newCenterDataIndex = Mathf.RoundToInt(currentScrollPosition);
         if (newCenterDataIndex != currentCenterDataIndex)//每帧检测位置更新数据
         {
+            if(Mathf.Abs(velocity) >= velocityThreshold)//速度太快不用更新，脏标记记录下
+            {
+                dataIsDirty = true;
+            }
+            else
+            {               
+                currentCenterDataIndex = newCenterDataIndex;
+                UpdateAllViewsData();
+            }
+        }
+        else if(dataIsDirty && Mathf.Abs(velocity) < velocityThreshold)//脏标记标记事项:减速后更新
+        {
             currentCenterDataIndex = newCenterDataIndex;
             UpdateAllViewsData();
+            dataIsDirty = false;
         }
 
         float fraction = currentScrollPosition - newCenterDataIndex;
