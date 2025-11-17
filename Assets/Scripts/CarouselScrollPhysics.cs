@@ -74,7 +74,7 @@ public class CarouselScrollPhysics
             return;
         }
         
-        if (m_currentPosition < m_minPos || m_currentPosition > m_maxPos)
+        if (m_currentPosition < m_minPos || m_currentPosition > m_maxPos)//惯性移动超出边界时
         {
             m_velocity = 0;
             float targetPos = (m_currentPosition < m_minPos) ? m_minPos : m_maxPos;
@@ -86,12 +86,12 @@ public class CarouselScrollPhysics
                 CurrentPosition = targetPos;
             }
         }
-        else if (Mathf.Abs(m_velocity) > 0.01f)
+        else if (Mathf.Abs(m_velocity) > 0.01f)//模拟惯性
         {
             CurrentPosition += m_velocity * deltaTime;
             m_velocity *= m_damping; 
         }
-        else
+        else//吸附到最近的整数索引，防止出现一半卡片
         {
             m_velocity = 0;
             int targetIndex = Mathf.RoundToInt(m_currentPosition);
